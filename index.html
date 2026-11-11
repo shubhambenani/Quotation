@@ -100,7 +100,18 @@ async function init(){
  db.collection('customers').onSnapshot(s=>{custs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.name||'').localeCompare(b.name||''));render()},err);
  db.collection('docs').onSnapshot(s=>{docs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));render()},err);
 }
-const getFB=()=>{try{return JSON.parse(localStorage.getItem('qbs_fb'))}catch(e){return null}};
+/* ===== PASTE YOUR FIREBASE CONFIG HERE ONCE (between the braces). Leave apiKey empty to skip. ===== */
+const FIREBASE_CONFIG={
+ apiKey:"AIzaSyC39MpJjToxn7hWp0c4ha17YZn3_L0x7mg",
+ authDomain:"quotation-and-billing-system.firebaseapp.com",
+ projectId:"quotation-and-billing-system",
+ storageBucket:"quotation-and-billing-system.firebasestorage.app",
+ messagingSenderId:"379021846036",
+ appId:"1:379021846036:web:ee11dcbf8d0553a5e72901"
+};
+/* ====================================================================================================== */
+const BUILTIN_FB=!!(FIREBASE_CONFIG.apiKey&&FIREBASE_CONFIG.projectId);
+const getFB=()=>{if(BUILTIN_FB)return FIREBASE_CONFIG;try{return JSON.parse(localStorage.getItem('qbs_fb'))}catch(e){return null}};
 const loadJS=u=>new Promise((r,j)=>{const e=document.createElement('script');e.src=u;e.onload=r;e.onerror=()=>j(new Error('Could not load Firebase. Check your internet connection.'));document.head.appendChild(e)});
 async function fbDB(cfg){
  const B='https://www.gstatic.com/firebasejs/10.12.2/';
@@ -114,7 +125,7 @@ function fbLogin(au){return new Promise(res=>{
  $('#app').innerHTML=`<div class="card" style="max-width:420px;margin:30px auto"><b>Sign in to your cloud database</b><p class="mut">Use the email and password you created in Firebase Authentication.</p><label>Email</label><input id="fe" type="email" autocomplete="username"><label style="margin-top:8px">Password</label><input id="fp" type="password" autocomplete="current-password"><p id="fm" style="color:var(--bad);margin:8px 0"></p><div class="row"><button class="btn" id="fgo">Sign in</button><button class="btn sec" id="fskip">Use offline instead</button></div></div>`;
  const go=async()=>{try{res((await au.signInWithEmailAndPassword($('#fe').value.trim(),$('#fp').value)).user)}catch(e){$('#fm').textContent=e.message}};
  $('#fgo').onclick=go;$('#fp').onkeydown=e=>{if(e.key==='Enter')go()};$('#fskip').onclick=()=>res('skip')})}
-function fbCard(){const c=getFB();return`<div class="card"><b>Cloud database (Firebase)</b><p class="mut">${c?'Connected to project <b>'+esc(c.projectId)+'</b>'+(mode==='firebase'?' and syncing.':' but not active in this session.'):'Optional. Store your data in your own Firebase project so it syncs across your laptop and phone.'}</p>${c?'<div class="row"><button class="btn bad" onclick="A.fbOff()">Disconnect</button></div>':'<label>Paste your Firebase web app config</label><textarea id="fbcfg" rows="6" placeholder="apiKey: &quot;...&quot;, authDomain: &quot;...&quot;, projectId: &quot;...&quot;, appId: &quot;...&quot;"></textarea><div class="row" style="margin-top:8px"><button class="btn" onclick="A.fbOn()">Connect &amp; reload</button></div>'}</div>`}
+function fbCard(){const c=getFB();return`<div class="card"><b>Cloud database (Firebase)</b><p class="mut">${c?'Connected to project <b>'+esc(c.projectId)+'</b>'+(mode==='firebase'?' and syncing.':' but not active in this session.'):'Optional. Store your data in your own Firebase project so it syncs across your laptop and phone.'}</p>${c&&BUILTIN_FB?'':c?'<div class="row"><button class="btn bad" onclick="A.fbOff()">Disconnect</button></div>':'<label>Paste your Firebase web app config</label><textarea id="fbcfg" rows="6" placeholder="apiKey: &quot;...&quot;, authDomain: &quot;...&quot;, projectId: &quot;...&quot;, appId: &quot;...&quot;"></textarea><div class="row" style="margin-top:8px"><button class="btn" onclick="A.fbOn()">Connect &amp; reload</button></div>'}</div>`}
 function backupCard(){return`<div class="card"><b>Data &amp; backup</b><p class="mut">${mode==='firebase'?'Your data is stored in your Firebase database and syncs across devices.':mode==='local'?'Running offline: your data is stored in this browser on this device only. Clearing browser data will erase it, so download a backup regularly.':'Your data is stored in your claude.ai database. You can still download a backup file.'}</p><div class="row"><button class="btn sec" onclick="A.backup()">Download backup (.json)</button><button class="btn sec" onclick="$('#rest').click()">Restore from backup</button><input id="rest" type="file" accept=".json,application/json" style="display:none" onchange="A.restore(this)"></div></div>`}
 const A={
  go(v){view=v;if(v==='new'&&!draft)draft=nd('quote');if(v!=='docs')custFilter=v==='docs'?custFilter:'';render()},
