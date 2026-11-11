@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Quotation &amp; Billing Software</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b2430;--mut:#6a7686;--bd:#dde2e8;--ac:#1f5fbf;--acx:#fff;--ok:#1a7f4b;--warn:#b26a00;--bad:#b3261e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181e;--card:#1c222b;--tx:#e8ecf1;--mut:#9aa6b5;--bd:#2d3643;--ac:#6ea3f0;--acx:#0d1520;--ok:#4cc58a;--warn:#e5a53d;--bad:#f0807a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14181e;--card:#1c222b;--tx:#e8ecf1;--mut:#9aa6b5;--bd:#2d3643;--ac:#6ea3f0;--acx:#0d1520;--ok:#4cc58a;--warn:#e5a53d;--bad:#f0807a;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+nav{display:flex;gap:4px;flex-wrap:wrap;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+nav b{margin-right:12px;align-self:center}
+button,select,input,textarea{font:inherit;color:var(--tx)}
+nav button,.btn{background:transparent;border:1px solid transparent;border-radius:7px;padding:6px 11px;cursor:pointer}
+nav button.on{background:var(--ac);color:var(--acx)}
+.btn{background:var(--ac);color:var(--acx);border-color:var(--ac)}.btn.sec{background:transparent;color:var(--tx);border-color:var(--bd)}.btn.sm{padding:3px 8px;font-size:12px}.btn.bad{background:transparent;color:var(--bad);border-color:var(--bad)}
+main{max-width:1050px;margin:0 auto;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:14px}
+.stat small{color:var(--mut);display:block}.stat div{font-size:22px;font-weight:650}
+input,select,textarea{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:6px 8px;width:100%}
+label{display:block;font-size:12px;color:var(--mut);margin-bottom:3px}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top}th{font-size:12px;color:var(--mut);font-weight:600}
+td.r,th.r{text-align:right}
+.tag{padding:2px 8px;border-radius:99px;font-size:12px;border:1px solid var(--bd)}.Accepted,.Paid{color:var(--ok);border-color:var(--ok)}.Pending,.Partial{color:var(--warn);border-color:var(--warn)}.Rejected,.Unpaid{color:var(--bad);border-color:var(--bad)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.row>*{flex:0 0 auto}.sp{flex:1!important}
+#modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;overflow:auto;padding:16px}
+#modal .box{background:var(--card);max-width:820px;margin:0 auto;border-radius:10px;padding:14px}
+.sheet{background:#fff;color:#111;padding:22px;border:1px solid #ccc;border-radius:6px;font-size:13px}
+.sheet table th,.sheet table td{border-color:#ccc;color:#111}.sheet th{color:#444}
+.sheet h2{margin:0}.sheet .hd{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #111;padding-bottom:8px;margin-bottom:10px}
+.sheet .tot{margin-left:auto;width:270px}.sheet .tot div{display:flex;justify-content:space-between;padding:2px 0}
+.mut{color:var(--mut)}
+@media print{body *{visibility:hidden}#modal,#modal .box{background:none;padding:0;position:static}.sheet,.sheet *{visibility:visible}.sheet{position:absolute;left:0;top:0;width:100%;border:0}}
+
+/* responsive */
+main{max-width:1200px}
+@media (min-width:1000px){nav{padding:12px 24px}main{padding:22px 28px}}
+@media (max-width:700px){
+ body{font-size:15px}
+ nav{flex-wrap:nowrap;overflow-x:auto;gap:2px;padding:8px 10px;-webkit-overflow-scrolling:touch}
+ nav b{display:none}nav button{white-space:nowrap;padding:9px 12px}
+ main{padding:10px}.card{padding:11px}
+ input,select,textarea{font-size:16px;padding:9px 10px}
+ .btn{padding:9px 13px}.btn.sm{padding:7px 10px;font-size:13px}
+ .grid{grid-template-columns:repeat(2,1fr)}.stat div{font-size:18px}
+ .f{grid-template-columns:1fr}
+ .tw table{min-width:520px}
+ .row select,.row input{width:100%!important}.row>.btn{flex:1 1 auto}.sp{display:none}
+ #modal{padding:0}#modal .box{border-radius:0;min-height:100%;padding:10px}
+ .sheet{padding:12px;font-size:12px}.sheet .hd{flex-direction:column}.sheet .hd>div{text-align:left!important}.sheet .tot{width:100%}
+}
+@media print{#modal{overflow:visible}}
+</style></head><body>
+<nav id="nav"></nav><main id="app"><p class="mut">Loading…</p></main>
+<div id="modal"><div class="box" id="mbox"></div></div>
+<script>
+const $=s=>document.querySelector(s);
+function toast(m){let t=$('#toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:#1b2430;color:#fff;padding:10px 16px;border-radius:8px;z-index:50;max-width:90%;box-shadow:0 4px 16px rgba(0,0,0,.3)';document.body.appendChild(t)}t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',4000)}
+window.alert=toast;let pend=null;
+const sure=(k,m)=>{if(pend===k){pend=null;return true}pend=k;toast(m||'Click again to confirm.');setTimeout(()=>{if(pend===k)pend=null},4000);return false};
+window.addEventListener('unhandledrejection',e=>toast('Error: '+((e.reason&&(e.reason.message||e.reason.code))||e.reason)));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=n=>'₹'+(Number(n)||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const today=()=>new Date().toISOString().slice(0,10);
+const addDays=n=>new Date(Date.now()+n*864e5).toISOString().slice(0,10);
+const TN={quote:'Quotation',gst:'GST Tax Invoice',raw:'Raw Bill'},PF={quote:'Q-',gst:'INV-',raw:'BILL-'};
+const UN=['Nos','Metre','Litre','Gram','Kg','Sq ft','Box','Set','Hour','Service'];
+let db=null,dl=null,firm={},custs=[],docs=[],view='dash',draft=null,custFilter='',typeFilter='',rf={from:'',to:'',cust:''},ready=false;
+
+function calc(d){let sub=0,tax=0;(d.items||[]).forEach(i=>{const b=(+i.q||0)*(+i.r||0)*(1-(+i.disc||0)/100);sub+=b;if(d.gstOn)tax+=b*(+i.g||0)/100});
+ sub=Math.round(sub*100)/100;tax=Math.round(tax*100)/100;return{sub,tax,total:Math.round((sub+tax)*100)/100}}
+const cust=id=>custs.find(c=>c.id===id)||{};
+const nextNo=t=>PF[t]+String(docs.filter(d=>d.type===t).reduce((m,d)=>Math.max(m,parseInt(String(d.no).replace(/\D/g,''))||0),0)+1).padStart(4,'0');
+const paidOf=d=>d.type==='quote'?0:(+d.paid||0);
+const payStatus=d=>{const t=calc(d).total,p=paidOf(d);return p<=0?'Unpaid':p>=t-0.005?'Paid':'Partial'};
+
+function localDB(){
+ const K='qbs_data_v1',subs=[];
+ const ld=()=>{try{return JSON.parse(localStorage.getItem(K))||{}}catch(e){return{}}};
+ const sv=o=>{try{localStorage.setItem(K,JSON.stringify(o))}catch(e){toast('Could not save: browser storage is blocked or full.')}};
+ const fire=()=>subs.forEach(f=>f());
+ const docRef=p=>({onSnapshot(cb){const f=()=>cb({id:p.split('/').pop(),data:()=>ld()[p]});subs.push(f);setTimeout(f,0)},
+  async set(o){const x=ld();x[p]=o;sv(x);fire()},
+  async update(o){const x=ld();x[p]=Object.assign({},x[p],o);sv(x);fire()},
+  async delete(){const x=ld();delete x[p];sv(x);fire()}});
+ const colRef=n=>({onSnapshot(cb){const f=()=>{const x=ld();cb({docs:Object.keys(x).filter(k=>k.startsWith(n+'/')).map(k=>({id:k.slice(n.length+1),data:()=>x[k]}))})};subs.push(f);setTimeout(f,0)},
+  async add(o){const id=Date.now().toString(36)+Math.random().toString(36).slice(2,7),x=ld();x[n+'/'+id]=o;sv(x);fire();return docRef(n+'/'+id)}});
+ return{doc:docRef,collection:colRef,_ld:ld,_sv:sv,_fire:fire}
+}
+function localDL(){return{save:async({filename,data})=>{const csv=/\.csv$/.test(filename);const b=new Blob([csv?'\ufeff'+data:data],{type:csv?'text/csv;charset=utf-8':'text/html;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}}}
+let mode='cloud';
+async function init(){
+ try{await claude.use('user');db=await claude.use('db');dl=await claude.use('downloads')}catch(e){}
+ if(!db){const cfg=getFB();if(cfg){try{db=await fbDB(cfg);if(db)mode='firebase'}catch(e){toast('Firebase: '+e.message)}}}
+ if(!db){mode='local';db=localDB()}
+ if(!dl)dl=localDL();
+ const err=e=>{$('#app').innerHTML='<div class="card">Database error: '+esc(e.message||e.code)+'</div>'};
+ db.doc('settings/firm').onSnapshot(s=>{firm=s.data()||{};ready=true;render()},err);
+ db.collection('customers').onSnapshot(s=>{custs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.name||'').localeCompare(b.name||''));render()},err);
+ db.collection('docs').onSnapshot(s=>{docs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));render()},err);
+}
+const getFB=()=>{try{return JSON.parse(localStorage.getItem('qbs_fb'))}catch(e){return null}};
+const loadJS=u=>new Promise((r,j)=>{const e=document.createElement('script');e.src=u;e.onload=r;e.onerror=()=>j(new Error('Could not load Firebase. Check your internet connection.'));document.head.appendChild(e)});
+async function fbDB(cfg){
+ const B='https://www.gstatic.com/firebasejs/10.12.2/';
+ await loadJS(B+'firebase-app-compat.js');await Promise.all([loadJS(B+'firebase-auth-compat.js'),loadJS(B+'firebase-firestore-compat.js')]);
+ firebase.initializeApp(cfg);const au=firebase.auth();
+ let u=await new Promise(r=>{const off=au.onAuthStateChanged(x=>{off();r(x)})});
+ while(!u){u=await fbLogin(au);if(u==='skip')return null}
+ const f=firebase.firestore();f.settings({ignoreUndefinedProperties:true});return f
+}
+function fbLogin(au){return new Promise(res=>{
+ $('#app').innerHTML=`<div class="card" style="max-width:420px;margin:30px auto"><b>Sign in to your cloud database</b><p class="mut">Use the email and password you created in Firebase Authentication.</p><label>Email</label><input id="fe" type="email" autocomplete="username"><label style="margin-top:8px">Password</label><input id="fp" type="password" autocomplete="current-password"><p id="fm" style="color:var(--bad);margin:8px 0"></p><div class="row"><button class="btn" id="fgo">Sign in</button><button class="btn sec" id="fskip">Use offline instead</button></div></div>`;
+ const go=async()=>{try{res((await au.signInWithEmailAndPassword($('#fe').value.trim(),$('#fp').value)).user)}catch(e){$('#fm').textContent=e.message}};
+ $('#fgo').onclick=go;$('#fp').onkeydown=e=>{if(e.key==='Enter')go()};$('#fskip').onclick=()=>res('skip')})}
+function fbCard(){const c=getFB();return`<div class="card"><b>Cloud database (Firebase)</b><p class="mut">${c?'Connected to project <b>'+esc(c.projectId)+'</b>'+(mode==='firebase'?' and syncing.':' but not active in this session.'):'Optional. Store your data in your own Firebase project so it syncs across your laptop and phone.'}</p>${c?'<div class="row"><button class="btn bad" onclick="A.fbOff()">Disconnect</button></div>':'<label>Paste your Firebase web app config</label><textarea id="fbcfg" rows="6" placeholder="apiKey: &quot;...&quot;, authDomain: &quot;...&quot;, projectId: &quot;...&quot;, appId: &quot;...&quot;"></textarea><div class="row" style="margin-top:8px"><button class="btn" onclick="A.fbOn()">Connect &amp; reload</button></div>'}</div>`}
+function backupCard(){return`<div class="card"><b>Data &amp; backup</b><p class="mut">${mode==='firebase'?'Your data is stored in your Firebase database and syncs across devices.':mode==='local'?'Running offline: your data is stored in this browser on this device only. Clearing browser data will erase it, so download a backup regularly.':'Your data is stored in your claude.ai database. You can still download a backup file.'}</p><div class="row"><button class="btn sec" onclick="A.backup()">Download backup (.json)</button><button class="btn sec" onclick="$('#rest').click()">Restore from backup</button><input id="rest" type="file" accept=".json,application/json" style="display:none" onchange="A.restore(this)"></div></div>`}
+const A={
+ go(v){view=v;if(v==='new'&&!draft)draft=nd('quote');if(v!=='docs')custFilter=v==='docs'?custFilter:'';render()},
+ async saveFirm(){const g=k=>$('#f_'+k).value.trim();const o={};['name','addr','phone','email','gstin','state','bank','terms','prefix'].forEach(k=>o[k]=g(k));o.gstReg=$('#f_gstReg').checked;
+  await db.doc('settings/firm').set(o);alert('Firm details saved.')},
+ async saveCust(){const g=k=>$('#c_'+k).value.trim();if(!g('name'))return alert('Enter customer name.');
+  const o={name:g('name'),phone:g('phone'),email:g('email'),addr:g('addr'),gstin:g('gstin').toUpperCase(),state:g('state')};const id=$('#c_id').value;
+  if(id)await db.doc('customers/'+id).set(o);else await db.collection('customers').add(o);view='cust';render()},
+ editCust(id){view='cust';render();const c=cust(id);['name','phone','email','addr','gstin','state'].forEach(k=>$('#c_'+k).value=c[k]||'');$('#c_id').value=id;scrollTo(0,0)},
+ async delCust(id){if(docs.some(d=>d.custId===id))return alert('This customer has quotations/bills and cannot be deleted.');if(sure('c'+id,'Click Delete again to confirm.'))await db.doc('customers/'+id).delete()},
+ recs(id){custFilter=id;view='docs';render()},
+ setType(t){draft.type=t;draft.gstOn=t==='gst';render()},
+ dk(k,v){draft[k]=v;if(k==='custId'||k==='inter')tot()},
+ it(i,k,v){draft.items[i][k]=(k==='d'||k==='u')?v:+v;tot()},
+ addRow(){draft.items.push({d:'',q:1,u:'Nos',r:0,disc:0,g:18});render()},
+ delRow(i){draft.items.splice(i,1);if(!draft.items.length)draft.items.push({d:'',q:1,u:'Nos',r:0,disc:0,g:18});render()},
+ async saveDoc(){if(!draft.custId)return alert('Choose a customer (add one in Customers first).');
+  const items=draft.items.filter(i=>i.d.trim());if(!items.length)return alert('Add at least one item.');
+  const d={...draft,items,no:nextNo(draft.type),createdAt:Date.now(),status:draft.type==='quote'?'Pending':'',paid:0};d.total=calc(d).total;
+  if(d.type==='gst'&&!firm.gstin&&!sure('gstin','Firm GSTIN is empty (see Settings). Click Save again to create the invoice anyway.'))return;
+  await db.collection('docs').add(d);draft=null;view='docs';render();toast('Saved '+d.no)},
+ async setStatus(id,s){await db.doc('docs/'+id).update({status:s});A.view(id)},
+ async setPaid(id){const d=docs.find(x=>x.id===id);let p=+$('#paidAmt').value||0;await db.doc('docs/'+id).update({paid:p,payDate:today()});A.view(id)},
+ async markPaid(id){const d=docs.find(x=>x.id===id);await db.doc('docs/'+id).update({paid:calc(d).total,payDate:today()});A.view(id)},
+ async convert(id,t){const q=docs.find(x=>x.id===id);if(q.status!=='Accepted')return;
+  const d={...q,type:t,gstOn:t==='gst',from:q.no,no:nextNo(t),createdAt:Date.now(),date:today(),status:'',paid:0};delete d.id;delete d.valid;delete d.converted;d.total=calc(d).total;
+  await db.collection('docs').add(d);await db.doc('docs/'+id).update({converted:d.no});closeM();view='docs';render()},
+ async delDoc(id){if(sure('d'+id,'Click Delete again to confirm.')){await db.doc('docs/'+id).delete();closeM()}},
+ view(id){const d=docs.find(x=>x.id===id);if(!d)return;const c=calc(d);let ctl='';
+  if(d.type==='quote'){ctl=`<div class="row"><b>Status:</b>${['Pending','Accepted','Rejected'].map(s=>`<button class="btn sm ${d.status===s?'':'sec'}" onclick="A.setStatus('${id}','${s}')">${s}</button>`).join('')}<span class="sp"></span>`+
+   (d.status==='Accepted'&&!d.converted?`<span class="mut">Convert to:</span><button class="btn sm" onclick="A.convert('${id}','gst')">GST Invoice</button><button class="btn sm" onclick="A.convert('${id}','raw')">Raw Bill</button>`:d.converted?`<span class="mut">Converted → ${esc(d.converted)}</span>`:'')+`</div>`}
+  else ctl=`<div class="row"><b>Payment:</b><span class="tag ${payStatus(d)}">${payStatus(d)}</span><span class="mut">Received ${inr(paidOf(d))} of ${inr(c.total)}</span><span class="sp"></span><input id="paidAmt" type="number" min="0" step="0.01" value="${paidOf(d)}" style="width:120px"><button class="btn sm sec" onclick="A.setPaid('${id}')">Update received</button><button class="btn sm" onclick="A.markPaid('${id}')">Mark fully paid</button></div>`;
+  $('#mbox').innerHTML=ctl+`<div id="sheetw">${sheet(d)}</div><div class="row" style="margin:12px 0 0"><button class="btn" onclick="window.print()">Print / Save as PDF</button><button class="btn sec" onclick="A.dlDoc('${id}')">Download file</button><span class="sp"></span><button class="btn bad" onclick="A.delDoc('${id}')">Delete</button><button class="btn sec" onclick="closeM()">Close</button></div>`;
+  $('#modal').style.display='block'},
+ async dlDoc(id){const d=docs.find(x=>x.id===id);if(!dl)return alert('Download is unavailable here; use Print / Save as PDF.');
+  try{await dl.save({filename:d.no+'.html',data:'<!DOCTYPE html><meta charset="utf-8"><title>'+esc(d.no)+'</title><style>body{font:13px system-ui;margin:20px}table{width:100%;border-collapse:collapse}th,td{padding:6px;border-bottom:1px solid #ccc;text-align:left}.hd{display:flex;justify-content:space-between;border-bottom:2px solid #111;margin-bottom:10px}.tot{margin-left:auto;width:270px}.tot div{display:flex;justify-content:space-between}.r{text-align:right}</style>'+sheet(d)})}catch(e){}},
+ fbOn(){const t=$('#fbcfg').value,o={};[...t.matchAll(/(\w+)\s*:\s*["']([^"']+)["']/g)].forEach(m=>o[m[1]]=m[2]);
+  if(!o.apiKey||!o.projectId)return toast('Config must include apiKey and projectId.');localStorage.setItem('qbs_fb',JSON.stringify(o));location.reload()},
+ fbOff(){localStorage.removeItem('qbs_fb');location.reload()},
+ async backup(){const o={firm,customers:custs,docs};if(dl)try{await dl.save({filename:'billing-backup-'+today()+'.json',data:JSON.stringify(o,null,1)})}catch(e){}},
+ async restore(inp){const f=inp.files[0];if(!f)return;try{const o=JSON.parse(await f.text());if(!o||!Array.isArray(o.docs)||!Array.isArray(o.customers))throw new Error('Not a valid backup file');
+  if(o.firm&&Object.keys(o.firm).length)await db.doc('settings/firm').set(o.firm);
+  const m={};for(const c of o.customers){const {id,...r}=c;const ref=await db.collection('customers').add(r);m[id]=ref.id}
+  for(const d of o.docs){const {id,...r}=d;if(m[r.custId])r.custId=m[r.custId];await db.collection('docs').add(r)}
+  toast('Backup restored (added to existing data).')}catch(e){toast('Restore failed: '+e.message)}inp.value=''},
+ async csv(){const r=repRows();const L=[['Date','No','Type','Customer','Total','Received','Status']].concat(r.map(d=>[d.date,d.no,TN[d.type],cust(d.custId).name||'',calc(d).total,paidOf(d),d.type==='quote'?d.status:payStatus(d)]));
+  const t=L.map(x=>x.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');if(dl)try{await dl.save({filename:'report.csv',data:t})}catch(e){}}
+};
+function closeM(){$('#modal').style.display='none'}
+function nd(t){return{type:t,custId:'',date:today(),valid:addDays(15),items:[{d:'',q:1,u:'Nos',r:0,disc:0,g:18}],inter:false,gstOn:t==='gst',notes:''}}
+
+function sheet(d){const c=cust(d.custId),cs=d.custSnap||c,t=calc(d);const raw=d.type==='raw';
+ const title=d.type==='gst'?'TAX INVOICE':raw?'BILL / CASH MEMO':'QUOTATION';
+ const rows=d.items.map((i,n)=>{const b=i.q*i.r*(1-i.disc/100);return`<tr><td>${n+1}</td><td>${esc(i.d)}</td><td class="r">${i.q} ${esc(i.u||'')}</td><td class="r">${inr(i.r)}${i.u?' / '+esc(i.u):''}</td><td class="r">${i.disc?i.disc+'%':'–'}</td>${d.gstOn?`<td class="r">${i.g}%</td>`:''}<td class="r">${inr(b)}</td></tr>`}).join('');
+ const br=d.gstOn?(d.inter?`<div><span>IGST</span><span>${inr(t.tax)}</span></div>`:`<div><span>CGST</span><span>${inr(t.tax/2)}</span></div><div><span>SGST</span><span>${inr(t.tax/2)}</span></div>`):'';
+ return`<div class="sheet"><div class="hd"><div><h2>${esc(firm.name||'Your Firm Name')}</h2><div>${esc(firm.addr||'')}</div><div>${esc([firm.phone,firm.email].filter(Boolean).join(' · '))}</div>${d.type==='gst'||(d.gstOn&&firm.gstin)?`<div><b>GSTIN:</b> ${esc(firm.gstin||'—')}</div>`:''}</div>
+ <div style="text-align:right"><h2>${title}</h2><div><b>${esc(d.no)}</b></div><div>Date: ${esc(d.date)}</div>${d.type==='quote'&&d.valid?`<div>Valid until: ${esc(d.valid)}</div>`:''}${d.from?`<div>Ref: ${esc(d.from)}</div>`:''}</div></div>
+ <div style="margin-bottom:10px"><b>${d.type==='quote'?'Quotation for':'Bill to'}:</b><div>${esc(cs.name||'')}</div><div>${esc(cs.addr||'')}</div><div>${esc(cs.phone||'')}</div>${cs.gstin?`<div>GSTIN: ${esc(cs.gstin)}</div>`:''}</div>
+ <div class="tw"><table><tr><th>#</th><th>Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Disc</th>${d.gstOn?'<th class="r">GST</th>':''}<th class="r">Amount</th></tr>${rows}</table></div>
+ <div class="tot" style="margin-top:10px"><div><span>Subtotal</span><span>${inr(t.sub)}</span></div>${br}<div style="border-top:1px solid #111;font-weight:700"><span>Total${d.gstOn?' payable':''}</span><span>${inr(t.total)}</span></div>${d.type!=='quote'&&paidOf(d)>0?`<div><span>Received</span><span>${inr(paidOf(d))}</span></div><div><span>Balance</span><span>${inr(t.total-paidOf(d))}</span></div>`:''}</div>
+ ${raw?'<p style="font-size:12px">No GST has been charged on this bill. This document is not a GST tax invoice.</p>':''}
+ ${d.notes?`<p><b>Notes:</b> ${esc(d.notes)}</p>`:''}${firm.bank?`<p><b>Bank details:</b> ${esc(firm.bank)}</p>`:''}${firm.terms?`<p style="font-size:12px"><b>Terms:</b> ${esc(firm.terms)}</p>`:''}</div>`}
+
+function stats(){const q=docs.filter(d=>d.type==='quote'),b=docs.filter(d=>d.type!=='quote');
+ const out=b.reduce((s,d)=>s+calc(d).total-paidOf(d),0);
+ return[['Total quotations',q.length],['Accepted',q.filter(d=>d.status==='Accepted').length],['Pending quotations',q.filter(d=>d.status==='Pending').length],['Bills / invoices',b.length],['Unpaid / part-paid bills',b.filter(d=>payStatus(d)!=='Paid').length],['Outstanding',inr(out)],['Total billed',inr(b.reduce((s,d)=>s+calc(d).total,0))],['Customers',custs.length]]}
+
+function tableDocs(list){return`<div class="tw"><table><tr><th>No</th><th>Type</th><th>Date</th><th>Customer</th><th class="r">Total</th><th>Status</th><th></th></tr>${list.map(d=>`<tr><td>${esc(d.no)}</td><td>${TN[d.type]}</td><td>${esc(d.date)}</td><td>${esc(cust(d.custId).name||d.custSnap?.name||'')}</td><td class="r">${inr(calc(d).total)}</td><td><span class="tag ${d.type==='quote'?d.status:payStatus(d)}">${d.type==='quote'?d.status:payStatus(d)}</span></td><td><button class="btn sm sec" onclick="A.view('${d.id}')">Open</button></td></tr>`).join('')||'<tr><td colspan="7" class="mut">Nothing here yet.</td></tr>'}</table></div>`}
+function repRows(){return docs.filter(d=>(!rf.from||d.date>=rf.from)&&(!rf.to||d.date<=rf.to)&&(!rf.cust||d.custId===rf.cust))}
+const copt=(sel)=>'<option value="">— select —</option>'+custs.map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(c.name)}</option>`).join('');
+
+function tot(){if(!draft)return;const t=calc(draft);const e=$('#tot');if(e)e.innerHTML=`Subtotal ${inr(t.sub)}${draft.gstOn?` · GST ${inr(t.tax)}`:''} · <b>Total ${inr(t.total)}</b>`}
+
+function render(){
+ const N=[['dash','Dashboard'],['new','+ New'],['docs','Quotations & Bills'],['cust','Customers'],['rep','Reports'],['set','Settings']];
+ $('#nav').innerHTML=`<b>${esc(firm.name||'Billing')}</b>`+N.map(([k,l])=>`<button class="${view===k?'on':''}" onclick="A.go('${k}')">${l}</button>`).join('');
+ const el=$('#app');let h='';
+ if(!ready){return}
+ if(view==='dash'){h=`${!firm.name?'<div class="card">Start in <b>Settings</b>: enter your firm name, address and GSTIN so documents carry your details.</div>':''}<div class="grid">${stats().map(([l,v])=>`<div class="card stat" style="margin:0"><small>${l}</small><div>${v}</div></div>`).join('')}</div><div class="card"><b>Recent records</b>${tableDocs(docs.slice(0,8))}</div>`}
+ else if(view==='new'){const t=draft.type;
+  h=`<div class="card"><div class="f"><div><label>Document type</label><select onchange="A.setType(this.value)">${Object.keys(TN).map(k=>`<option value="${k}" ${t===k?'selected':''}>${TN[k]}</option>`).join('')}</select></div>
+  <div><label>Customer</label><select onchange="A.dk('custId',this.value)">${copt(draft.custId)}</select></div>
+  <div><label>Date</label><input type="date" value="${draft.date}" onchange="A.dk('date',this.value)"></div>
+  ${t==='quote'?`<div><label>Valid until</label><input type="date" value="${draft.valid}" onchange="A.dk('valid',this.value)"></div><div><label>Show GST on quotation</label><select onchange="draft.gstOn=this.value==='1';render()"><option value="0" ${!draft.gstOn?'selected':''}>No</option><option value="1" ${draft.gstOn?'selected':''}>Yes</option></select></div>`:''}
+  ${draft.gstOn?`<div><label>Supply type</label><select onchange="draft.inter=this.value==='1';render()"><option value="0" ${!draft.inter?'selected':''}>Within state (CGST + SGST)</option><option value="1" ${draft.inter?'selected':''}>Other state (IGST)</option></select></div>`:''}</div>
+  ${t==='raw'?'<p class="mut">Raw bills carry no GST and are labelled as not a tax invoice. Whether GST must be charged depends on your registration and the supply — confirm with your accountant.</p>':''}</div>
+  <div class="card"><div class="tw"><table><tr><th>Description</th><th>Qty</th><th>Unit</th><th>Rate (per unit)</th><th>Disc %</th>${draft.gstOn?'<th>GST %</th>':''}<th></th></tr>${draft.items.map((i,n)=>`<tr><td><input value="${esc(i.d)}" oninput="A.it(${n},'d',this.value)"></td><td><input type="number" min="0" value="${i.q}" step="any" oninput="A.it(${n},'q',this.value)" style="width:80px"></td><td><select onchange="A.it(${n},'u',this.value)" style="width:95px">${UN.map(u=>`<option ${(i.u||'Nos')===u?'selected':''}>${u}</option>`).join('')}</select></td><td><input type="number" min="0" step="0.01" value="${i.r}" oninput="A.it(${n},'r',this.value)" style="width:110px"></td><td><input type="number" min="0" max="100" value="${i.disc}" oninput="A.it(${n},'disc',this.value)" style="width:80px"></td>${draft.gstOn?`<td><select onchange="A.it(${n},'g',this.value)" style="width:80px">${[0,5,12,18,28].map(g=>`<option ${+i.g===g?'selected':''}>${g}</option>`).join('')}</select></td>`:''}<td><button class="btn sm bad" onclick="A.delRow(${n})">✕</button></td></tr>`).join('')}</table></div>
+  <div class="row" style="margin-top:10px"><button class="btn sm sec" onclick="A.addRow()">+ Add item</button><span class="sp"></span><span id="tot"></span></div>
+  <label>Notes</label><textarea rows="2" oninput="draft.notes=this.value">${esc(draft.notes)}</textarea><div class="row" style="margin-top:12px"><button class="btn" onclick="A.saveDoc()">Save ${TN[t]}</button><button class="btn sec" onclick="draft=null;A.go('dash')">Discard</button></div></div>`}
+ else if(view==='docs'){const l=docs.filter(d=>(!custFilter||d.custId===custFilter)&&(!typeFilter||d.type===typeFilter));
+  h=`<div class="row"><select style="width:auto" onchange="typeFilter=this.value;render()"><option value="">All types</option>${Object.keys(TN).map(k=>`<option value="${k}" ${typeFilter===k?'selected':''}>${TN[k]}</option>`).join('')}</select><select style="width:auto" onchange="custFilter=this.value;render()">${copt(custFilter).replace('— select —','All customers')}</select></div><div class="card">${tableDocs(l)}</div>`}
+ else if(view==='cust'){h=`<div class="card"><input type="hidden" id="c_id"><div class="f"><div><label>Name</label><input id="c_name"></div><div><label>Phone</label><input id="c_phone"></div><div><label>Email</label><input id="c_email"></div><div><label>GSTIN (if any)</label><input id="c_gstin"></div><div><label>State</label><input id="c_state"></div></div><label style="margin-top:8px">Address</label><textarea id="c_addr" rows="2"></textarea><div class="row" style="margin-top:10px"><button class="btn" onclick="A.saveCust()">Save customer</button></div></div>
+  <div class="card tw"><table><tr><th>Name</th><th>Phone</th><th>GSTIN</th><th>Records</th><th></th></tr>${custs.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${esc(c.gstin)}</td><td><a href="#" onclick="A.recs('${c.id}');return false">${docs.filter(d=>d.custId===c.id).length} open</a></td><td><button class="btn sm sec" onclick="A.editCust('${c.id}')">Edit</button> <button class="btn sm bad" onclick="A.delCust('${c.id}')">Delete</button></td></tr>`).join('')||'<tr><td colspan="5" class="mut">No customers yet.</td></tr>'}</table></div>`}
+ else if(view==='rep'){const r=repRows(),b=r.filter(d=>d.type!=='quote'),q=r.filter(d=>d.type==='quote');
+  h=`<div class="card"><div class="f"><div><label>From</label><input type="date" value="${rf.from}" onchange="rf.from=this.value;render()"></div><div><label>To</label><input type="date" value="${rf.to}" onchange="rf.to=this.value;render()"></div><div><label>Customer</label><select onchange="rf.cust=this.value;render()">${copt(rf.cust).replace('— select —','All')}</select></div></div></div>
+  <div class="grid">${[['Quotations',q.length+' · '+inr(q.reduce((s,d)=>s+calc(d).total,0))],['Billed',inr(b.reduce((s,d)=>s+calc(d).total,0))],['Received',inr(b.reduce((s,d)=>s+paidOf(d),0))],['Outstanding',inr(b.reduce((s,d)=>s+calc(d).total-paidOf(d),0))],['GST collected',inr(b.filter(d=>d.gstOn).reduce((s,d)=>s+calc(d).tax,0))]].map(([l,v])=>`<div class="card stat" style="margin:0"><small>${l}</small><div style="font-size:17px">${v}</div></div>`).join('')}</div>
+  <div class="card"><div class="row"><button class="btn sm sec" onclick="A.csv()">Download CSV</button></div>${tableDocs(r)}</div>`}
+ else if(view==='set'){const f=(k,l,t)=>`<div><label>${l}</label><input id="f_${k}" value="${esc(firm[k]||'')}"></div>`;
+  h=`<div class="card"><div class="f">${f('name','Firm name')}${f('phone','Phone')}${f('email','Email')}${f('gstin','Firm GSTIN')}${f('state','State')}</div><label style="margin-top:8px">Address</label><input id="f_addr" value="${esc(firm.addr||'')}"><label style="margin-top:8px">Bank details</label><input id="f_bank" value="${esc(firm.bank||'')}"><label style="margin-top:8px">Terms &amp; conditions</label><textarea id="f_terms" rows="3">${esc(firm.terms||'')}</textarea><input type="hidden" id="f_prefix"><label style="margin-top:8px"><input type="checkbox" id="f_gstReg" ${firm.gstReg?'checked':''} style="width:auto"> Firm is GST-registered</label><div class="row" style="margin-top:10px"><button class="btn" onclick="A.saveFirm()">Save</button></div><p class="mut">Data is stored in this page’s shared database and is visible to people you share the page with.</p></div>`}
+ if(view==='set'){h+=backupCard();if(mode!=='cloud')h+=fbCard()}el.innerHTML=h;if(view==='new')tot();
+}
+init();
+</script></body></html>
